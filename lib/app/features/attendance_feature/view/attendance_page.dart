@@ -35,6 +35,8 @@ class _AttendancePageState extends State<AttendancePage> {
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const BranchDropdown(),
             const SizedBox(height: 20),
@@ -47,6 +49,7 @@ class _AttendancePageState extends State<AttendancePage> {
                 return const SizedBox.shrink();
               }
             }),
+            SizedBox(height: Get.height * 0.01),
             const ActionCard(),
           ],
         ),

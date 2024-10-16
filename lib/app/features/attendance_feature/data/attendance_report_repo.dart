@@ -14,7 +14,7 @@ class AttendanceReportService {
       'Content-Type': 'application/json',
       'Authorization': 'Basic $token',
     };
-    var baseSiteUrl = 'https://${UserPreference.getSiteURL()}';
+    var baseSiteUrl = 'http://${UserPreference.getSiteURL()}';
     var url = Uri.parse(
         '$baseSiteUrl${APIString.apiBaseURL}${APIString.empAttendanceReportENDPOINT}?employee_name=$empName');
 

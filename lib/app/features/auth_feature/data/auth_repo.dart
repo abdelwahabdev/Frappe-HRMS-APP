@@ -11,8 +11,9 @@ import '../../../utils/constant/api_string.dart';
 import '../model/user_model.dart';
 
 class AuthService {
+
   Future<UserModel?> login(String usernameOrEmail, String password) async {
-    var baseSiteUrl = 'https://${UserPreference.getSiteURL()}';
+    var baseSiteUrl = 'http://${UserPreference.getSiteURL()}';
     var url = '$baseSiteUrl${APIString.apiBaseURL}${APIString.loginENDPOINT}';
 
     final body = jsonEncode({'usr': usernameOrEmail, 'pwd': password});
@@ -48,7 +49,7 @@ class AuthService {
 
   Future<void> logout() async {
     try {
-      var site = 'https://${UserPreference.getSiteURL()}';
+      var site = 'http://${UserPreference.getSiteURL()}';
       var url = site + APIString.logoutEndPoint;
       final response = await http.get(Uri.parse(url));
 
