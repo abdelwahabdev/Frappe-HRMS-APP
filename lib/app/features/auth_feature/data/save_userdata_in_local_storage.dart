@@ -8,7 +8,6 @@ class SaveUserdataInLocalStorage {
     UserPreference.setIsLoggedIn(true);
     UserPreference.setToken(userData.token);
     UserPreference.setUsername(userData.username);
-    UserPreference.setUserId(userData.userId);
     UserPreference.setEmail(userData.email);
     UserPreference.setEnableRemote(userData.enableRemote);
     UserPreference.setFullName(userData.fullName);
@@ -23,7 +22,6 @@ class SaveUserdataInLocalStorage {
   static clearUserdataInLocalStorage() {
     UserPreference.setToken('');
     UserPreference.setUsername('');
-    UserPreference.setUserId('');
     UserPreference.setEmail('');
     UserPreference.setEnableRemote(0);
     UserPreference.setFullName('');

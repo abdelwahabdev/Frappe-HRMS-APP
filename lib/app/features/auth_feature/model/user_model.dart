@@ -15,10 +15,8 @@ class UserModel {
 class UserDataModel {
   final String token;
   final String username;
-  final String userId;
   final String email;
   final String fullName;
-
   final String? employee;
   final String? employeeName;
   final double latitude;
@@ -30,7 +28,6 @@ class UserDataModel {
   UserDataModel({
     required this.token,
     required this.username,
-    required this.userId,
     required this.email,
     required this.fullName,
     required this.latitude,
@@ -46,7 +43,6 @@ class UserDataModel {
     return UserDataModel(
       token: json['token'],
       username: json['username'],
-      userId: json['user_id'],
       email: json['email'] ?? ' ',
       enableRemote: json['enable_remote'] ?? 0,
       fullName: json['full_name'] ?? ' ',

@@ -53,14 +53,6 @@ class UserPreference {
     return sharedpref!.getString('username') ?? '';
   }
 
-  static Future<void> setUserId(String userId) async {
-    await sharedpref!.setString('user_id', userId);
-  }
-
-  static String getUserId() {
-    return sharedpref!.getString('user_id') ?? '';
-  }
-
   static Future<void> setEmail(String email) async {
     await sharedpref!.setString('email', email);
   }

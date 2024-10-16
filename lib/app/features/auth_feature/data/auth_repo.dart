@@ -11,7 +11,6 @@ import '../../../utils/constant/api_string.dart';
 import '../model/user_model.dart';
 
 class AuthService {
-
   Future<UserModel?> login(String usernameOrEmail, String password) async {
     var baseSiteUrl = 'http://${UserPreference.getSiteURL()}';
     var url = '$baseSiteUrl${APIString.apiBaseURL}${APIString.loginENDPOINT}';
@@ -34,10 +33,20 @@ class AuthService {
               isError: true);
           return null;
         }
+      } else if (response.statusCode == 301) {
+        showCustomSnackBar(
+          'invalid_server'.trParams({'code': response.reasonPhrase.toString()}),
+          isError: true,
+        );
+      }else if (response.statusCode == 500){
+        showCustomSnackBar(
+          'server_error'.trParams({'code': response.reasonPhrase.toString()}),
+          isError: true,
+        );    
       } else {
-        // showCustomSnackBar(
-        //     'server_error'.trParams({'code': response.statusCode.toString()}),
-        //     isError: true);
+        showCustomSnackBar(
+            'an_error_occurred'.trParams({'code': response.statusCode.toString()}),
+            isError: true);
         return null;
       }
     } catch (e) {
@@ -45,6 +54,7 @@ class AuthService {
           isError: true);
       return null;
     }
+    return null;
   }
 
   Future<void> logout() async {
@@ -55,7 +65,7 @@ class AuthService {
 
       if (response.statusCode == 200) {
         await SaveUserdataInLocalStorage.clearUserdataInLocalStorage();
-        if (UserPreference.getSiteURL()== '') {
+        if (UserPreference.getSiteURL() == '') {
           Get.offAllNamed(AppRoutes.companySetting);
         } else {
           Get.offAllNamed(AppRoutes.login);

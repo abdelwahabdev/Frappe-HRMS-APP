@@ -37,6 +37,8 @@ final Map<String, String> ar = {
   "No branch selected.": "لم يتم اختيار أي فرع.",
   "Biometric authentication failed.": "فشلت المصادقة البيومترية.",
   'server_error': 'خطأ في الخادم',
+  'invalid_server': "خطأ في رابط الموقع",
+  "an_error_occurred": "حدث خطأ يرجي المحاولة مرة أخرى",
   'network_error': 'خطأ في الشبكة',
   'logout_error': 'خطأ في تسجيل الخروج',
   'logout_network_error': 'خطأ في الشبكة أثناء تسجيل الخروج',

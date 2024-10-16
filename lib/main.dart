@@ -44,6 +44,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: AppStrings.appName,
         theme: AppTheme.lightTheme,
+
         initialRoute: UserPreference.isLoggedIn()
             ? AppRoutes.attendancePage
             : AppRoutes.companySetting,
@@ -57,7 +58,7 @@ class MyApp extends StatelessWidget {
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-        supportedLocales: const <Locale>[Locale('en'), Locale('ar')],
+        supportedLocales: const <Locale>[Locale('ar'), Locale('en')],
         locale: locale,
         translations: AppLocalization(),
         //

@@ -33,6 +33,7 @@ class CustomTextField extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: padding ?? 16),
       child: TextFormField(
         obscureText: visable ?? false,
+        // textDirection: TextDirection.ltr,
         controller: controller,
         keyboardType: keyboardType ?? TextInputType.text,
         validator: validator,
