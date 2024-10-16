@@ -1,22 +1,15 @@
 import 'package:bio_attend/app/features/attendance_feature/controller/attendance_controller.dart';
 import 'package:bio_attend/app/theme/app_color.dart';
-import 'package:bio_attend/app/utils/constant/app_images.dart';
 import 'package:bio_attend/app/utils/helper/shared_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
 
+import '../../../../common/custom_loading_indecator.dart';
+import '../../../../utils/constant/app_strings.dart';
 import '../../../../utils/constant/check_in_type.dart';
 
-class ActionCard extends StatefulWidget {
+class ActionCard extends StatelessWidget {
   const ActionCard({super.key});
-
-  @override
-  State<ActionCard> createState() => _ActionCardState();
-}
-
-class _ActionCardState extends State<ActionCard> {
-  final List<bool> selected = [false, true];
 
   @override
   Widget build(BuildContext context) {
@@ -30,76 +23,42 @@ class _ActionCardState extends State<ActionCard> {
         return const SizedBox.shrink();
       }
 
-      if (controller.serviceEnabled.value) {
-        return Column(
-          children: [
-            const SizedBox(height: 20),
-            ToggleButtons(
-              isSelected: selected,
-              color: Colors.black,
-              fillColor: AppColors.primaryColor,
-              borderColor: AppColors.primaryColor.withOpacity(0.2),
-              splashColor: AppColors.primaryColor.withOpacity(0.3),
-              selectedBorderColor: AppColors.primaryColor.withOpacity(0.8),
-              selectedColor: Colors.white,
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-              constraints: const BoxConstraints(minWidth: 100, minHeight: 40),
-              onPressed: (int index) {
-                setState(() {
-                  for (int i = 0; i < selected.length; i++) {
-                    selected[i] = i == index;
-                  }
-                  if (index == 0) {
-                    controller.updateCheckinType(CheckinType.OUT);
-                  } else {
-                    controller.updateCheckinType(CheckinType.IN);
-                  }
-                });
-              },
-              children: [Text(CheckinType.OUT.name), Text(CheckinType.IN.name)],
-            ),
-            const SizedBox(height: 50),
-            Obx(() {
-              if (controller.isSuccessCheckin.value == true &&
-                  !controller.ispenddingFingerprint.value) {
-                return Lottie.asset(
-                  Images.successFingerprint,
-                  height: 120,
-                  repeat: false,
-                  onLoaded: (composition) {
-                    Future.delayed(const Duration(milliseconds: 2500), () {
-                      // controller.isSuccessCheckin.value = false;
-                      controller.ispenddingFingerprint.value = true;
-                    });
-                  },
-                );
-              } else if (controller.isSuccessCheckin.value == false &&
-                  !controller.ispenddingFingerprint.value) {
-                return Lottie.asset(
-                  Images.failedFingerprint,
-                  height: 120,
-                  repeat: false,
-                  onLoaded: (composition) {
-                    Future.delayed(const Duration(milliseconds: 2500), () {
-                      // controller.isSuccessCheckin.value = false;
-                      controller.ispenddingFingerprint.value = true;
-                    });
-                  },
-                );
-              } else {
-                return GestureDetector(
-                  onTap: () => controller.checkInUseBiometrics(),
-                  child: Image.asset(
-                    Images.pendingFingerprint,
-                    height: 100,
+      if (!controller.isCheckingIn.value && controller.serviceEnabled.value) {
+        return Card(
+          color: AppColors.onPrimaryColor,
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              Obx(() => Text(
+                    AttendanceController.instance.timeNow.value,
+                    textAlign: TextAlign.center,
+                    textDirection: TextDirection.ltr,
+                    style: Theme.of(Get.context!).textTheme.displayLarge,
+                  )),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  BuildActionCardItem(
+                    btn: AppStrings.checkIn.tr,
+                    title: AppStrings.attendance.tr,
+                    onPressed: () => controller.checkInUseBiometrics(
+                        checkinType: CheckinType.IN),
+                    isCheckInBTN: true,
                   ),
-                );
-              }
-            }),
-          ],
+                  BuildActionCardItem(
+                    btn: AppStrings.checkOut.tr,
+                    title: AppStrings.leave.tr,
+                    onPressed: () => controller.checkInUseBiometrics(
+                        checkinType: CheckinType.OUT),
+                    isCheckInBTN: false,
+                  ),
+                ],
+              ),
+            ],
+          ),
         );
       } else {
-        return const SizedBox.shrink();
+        return const CustomLoadingIndecator();
       }
     });
   }
@@ -144,22 +103,3 @@ class BuildActionCardItem extends StatelessWidget {
     ));
   }
 }
-
-            // Row(
-            //   children: [
-            //     BuildActionCardItem(
-            //       btn: AppStrings.checkIn.tr,
-            //       title: AppStrings.attendance.tr,
-            //       onPressed: () => controller.checkInUseBiometrics(
-            //           checkinType: CheckinType.IN),
-            //       isCheckInBTN: true,
-            //     ),
-            //     BuildActionCardItem(
-            //       btn: AppStrings.checkOut.tr,
-            //       title: AppStrings.leave.tr,
-            //       onPressed: () => controller.checkInUseBiometrics(
-            //           checkinType: CheckinType.OUT),
-            //       isCheckInBTN: false,
-            //     ),
-            //   ],
-            // ),

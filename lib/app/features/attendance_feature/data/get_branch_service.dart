@@ -11,7 +11,7 @@ class GetBranchDataService {
   Future<List<BranchListModel>> fetchBranchList() async {
     // Retrieve token and site URL from user preferences
     final token = UserPreference.getToken();
-    final baseSiteUrl = 'http://${UserPreference.getSiteURL()}';
+    final baseSiteUrl = 'https://${UserPreference.getSiteURL()}';
 
     // Set up headers
     var headers = {

@@ -16,13 +16,21 @@ import 'app/utils/helper/permission_request.dart';
 SharedPreferences? sharedpref;
 
 void main() async {
+
   WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations(
+    [
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ],
+  ).then((value) async{
+    await PermissionRequest.requestPermission();
 
-  await PermissionRequest.requestPermission();
+    sharedpref = await SharedPreferences.getInstance();
 
-  sharedpref = await SharedPreferences.getInstance();
+    runApp(const MyApp());
+  });
 
-  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -30,16 +38,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
     final locaController = Get.put(MyLocalController());
     final localeValue = locaController.selectedLang.value;
     final locale = (localeValue == 'en' || localeValue == 'ar')
         ? Locale(localeValue)
         : const Locale('ar');
-
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown
+    ]);
     return GetMaterialApp(
         debugShowCheckedModeBanner: false,
         title: AppStrings.appName,

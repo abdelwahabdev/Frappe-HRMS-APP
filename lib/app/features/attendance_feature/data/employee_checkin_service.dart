@@ -15,7 +15,7 @@ class EmployeeCheckinService {
       'Authorization': 'Basic $token',
       'Content-Type': 'application/json',
     };
-    var baseSiteUrl = 'http://${UserPreference.getSiteURL()}';
+    var baseSiteUrl = 'https://${UserPreference.getSiteURL()}';
 
     var url = Uri.parse(
         baseSiteUrl + APIString.apiBaseURL + APIString.employeeCheckinENDPOINT);

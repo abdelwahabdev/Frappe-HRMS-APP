@@ -36,20 +36,17 @@ class AttendanceController extends GetxController {
       <AttendanceReportModel>[].obs;
 
   final RxBool isCheckingIn = false.obs;
-  final RxBool isSuccessCheckin = true.obs;
-  final RxBool ispenddingFingerprint = true.obs;
   final RxBool serviceEnabled = false.obs;
   final RxBool isWaitingBranch = false.obs;
   final RxString timeNow = RxString('');
   final RxDouble distance = 0.0.obs;
-
-  var selectedCheckinType = CheckinType.IN.obs; 
 
   late Timer _timer;
 
   @override
   void onInit() async {
     super.onInit();
+    _initializeTime();
     fetchCurrentPosition();
     _startTimer();
     await fetchBranchList();
@@ -81,13 +78,24 @@ class AttendanceController extends GetxController {
 
   void _startTimer() {
     _timer = Timer.periodic(const Duration(minutes: 1), (_) {
+      updateTimeNow();
       updateDistanceToOffice();
     });
   }
 
-  // Method to update the selected check-in type
-  void updateCheckinType(CheckinType type) {
-    selectedCheckinType.value = type;
+  void _initializeTime() {
+    updateTimeNow();
+    _startTimer();
+  }
+
+  void updateTimeNow() {
+    final now = DateTime.now();
+    final hour = now.hour % 12 == 0 ? 12 : now.hour % 12;
+    final minute = now.minute;
+    final period = now.hour < 12 ? 'AM' : 'PM';
+
+    timeNow.value =
+        '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')} $period';
   }
 
   Future<void> getUserAttendanceReport() async {
@@ -117,7 +125,7 @@ class AttendanceController extends GetxController {
     }
   }
 
-  Future<void> checkInUseBiometrics() async {
+  Future<void> checkInUseBiometrics({required CheckinType checkinType}) async {
     if (currentPosition.value == null) {
       showCustomSnackBar('No location data available for check-in.'.tr,
           isError: true);
@@ -143,51 +151,37 @@ class AttendanceController extends GetxController {
     try {
       final authenticated = await _biometricService.authenticate();
       if (authenticated) {
-        await _checkIn();
+        await _checkIn(checkinType: checkinType);
       }
     } catch (e) {
       showCustomSnackBar(AppStrings.authErrorOccured.tr, isError: true);
     }
   }
 
-  Future<void> _checkIn() async {
+  Future<void> _checkIn({required CheckinType checkinType}) async {
     isCheckingIn.value = true;
     try {
-      ispenddingFingerprint.value = false;
       Position? position = currentPosition.value;
       if (position != null) {
         bool success =
             await _employeeCheckinService.addEmployeeCheckin(EmployeeCheckin(
-          logType: selectedCheckinType.value == CheckinType.IN ? 'IN' : 'OUT',
+          logType: checkinType == CheckinType.IN ? 'IN' : 'OUT',
           longitude: position.longitude,
           latitude: position.latitude,
         ));
 
         if (success) {
-          isSuccessCheckin.value = true;
-          Future.delayed(const Duration(seconds: 2), () {
-            ispenddingFingerprint.value = true;
-            isCheckingIn.value = false;
-          });
           showCustomSnackBar(AppStrings.processCompleted.tr,
               isError: false, duration: const Duration(milliseconds: 1000));
         } else {
-          isSuccessCheckin.value = false;
-          Future.delayed(const Duration(seconds: 2), () {
-            ispenddingFingerprint.value = true;
-            isCheckingIn.value = false;
-          });
           // showCustomSnackBar('Failed to check in.'.tr, isError: true);
         }
       }
     } catch (e) {
-      isSuccessCheckin.value = false;
-      Future.delayed(const Duration(seconds: 2), () {
-        ispenddingFingerprint.value = true;
-        isCheckingIn.value = false;
-      });
       debugLog('Error during check-in: $e');
       showCustomSnackBar(AppStrings.checkinErrorOcuured.tr, isError: true);
+    } finally {
+      isCheckingIn.value = false;
     }
   }
 
